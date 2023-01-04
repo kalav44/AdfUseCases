@@ -11,7 +11,13 @@
 		"ls_sql_output_connectionString": {
 			"value": ""
 		},
+		"ls_pipeline_input_accountKey": {
+			"value": ""
+		},
 		"ls_dataflow_input_properties_typeProperties_url": {
+			"value": "https://adfgen2storagev.dfs.core.windows.net/"
+		},
+		"ls_pipeline_input_properties_typeProperties_url": {
 			"value": "https://adfgen2storagev.dfs.core.windows.net/"
 		}
 	}
