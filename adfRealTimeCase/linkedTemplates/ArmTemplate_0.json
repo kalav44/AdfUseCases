@@ -1,0 +1,350 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adfRealTimeCase"
+		},
+		"ls_dataflow_input_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_dataflow_input'"
+		},
+		"ls_sql_output_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_output'"
+		},
+		"ls_dataflow_input_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfgen2storagev.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_dataflow_input')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_dataflow_input_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_dataflow_input_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_sql_output')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_sql_output_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_salesindiadata_input')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_dataflow_input",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "SalesIndia.csv",
+						"folderPath": "input",
+						"fileSystem": "dataflow"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_dataflow_input')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sqlsalesindgooddata_output')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_output",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "salesdate",
+						"type": "date"
+					},
+					{
+						"name": "salesitem",
+						"type": "varchar"
+					},
+					{
+						"name": "quantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "country",
+						"type": "varchar"
+					},
+					{
+						"name": "filename",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "salesgood"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_output')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_SQL_salesindiabad_output')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_output",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "salesdate",
+						"type": "varchar"
+					},
+					{
+						"name": "salesitem",
+						"type": "varchar"
+					},
+					{
+						"name": "quantity",
+						"type": "varchar"
+					},
+					{
+						"name": "country",
+						"type": "varchar"
+					},
+					{
+						"name": "filename",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "salesbad"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_output')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1ErrHandling')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_salesindiadata_input",
+								"type": "DatasetReference"
+							},
+							"name": "SalesIndia"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_sqlsalesindgooddata_output",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_SQL_salesindiabad_output",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "split1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "derivedColumn2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          saleDate as string,",
+						"          Item as string,",
+						"          Quantity as short,",
+						"          Country as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> SalesIndia",
+						"SalesIndia split(!isNull(toDate(saleDate,'dd-MMM-yyyy')),",
+						"     disjoint: false) ~> split1@(GoodRows, BadRows)",
+						"split1@GoodRows derive(filename = 'salesIndia',",
+						"          Quantity = toInteger(Quantity),",
+						"          saleDate = toDate(saleDate,'dd-MMM-yyyy')) ~> derivedColumn1",
+						"split1@BadRows derive(filename = 'salesindia') ~> derivedColumn2",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          salesdate as date,",
+						"          salesitem as string,",
+						"          quantity as integer,",
+						"          country as string,",
+						"          filename as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          salesdate = saleDate,",
+						"          salesitem = Item,",
+						"          quantity = Quantity,",
+						"          country = Country,",
+						"          filename",
+						"     )) ~> sink1",
+						"derivedColumn2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          salesdate as string,",
+						"          salesitem as string,",
+						"          quantity as string,",
+						"          country as string,",
+						"          filename as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          salesdate = saleDate,",
+						"          salesitem = Item,",
+						"          quantity = Quantity,",
+						"          country = Country,",
+						"          filename",
+						"     )) ~> sink2"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_salesindiadata_input')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sqlsalesindgooddata_output')]",
+				"[concat(variables('factoryId'), '/datasets/ds_SQL_salesindiabad_output')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1handlingErrorData')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Fetching data from source and based on data correction ingesing it intoSQL good/bad tables",
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1ErrHandling",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SalesIndia": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1ErrHandling')]"
+			]
+		}
+	]
+}
