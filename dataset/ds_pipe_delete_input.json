@@ -1,0 +1,18 @@
+{
+	"name": "ds_pipe_delete_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pipeline_input",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "delete",
+				"fileSystem": "pipeline"
+			}
+		}
+	}
+}
