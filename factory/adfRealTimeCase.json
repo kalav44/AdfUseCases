@@ -1,0 +1,9 @@
+{
+	"name": "adfRealTimeCase",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d533d7e7-38e5-4372-a5fd-146a420d3cda",
+		"tenantId": "599379ca-653c-4409-9593-1ac8a21aa7d8"
+	}
+}
