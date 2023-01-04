@@ -1,0 +1,27 @@
+{
+	"name": "ds_pipe_input3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pipeline_input",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": "input",
+				"fileSystem": "pipeline"
+			}
+		}
+	}
+}
