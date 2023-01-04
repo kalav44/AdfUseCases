@@ -1,0 +1,37 @@
+{
+	"name": "ds_SQL_salesindiabad_output",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_output",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "salesdate",
+				"type": "varchar"
+			},
+			{
+				"name": "salesitem",
+				"type": "varchar"
+			},
+			{
+				"name": "quantity",
+				"type": "varchar"
+			},
+			{
+				"name": "country",
+				"type": "varchar"
+			},
+			{
+				"name": "filename",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "salesbad"
+		}
+	}
+}
