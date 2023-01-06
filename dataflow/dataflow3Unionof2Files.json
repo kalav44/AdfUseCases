@@ -29,6 +29,13 @@
 			"sinks": [
 				{
 					"name": "maxid"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_dataflow_allemp_output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -87,7 +94,14 @@
 				"     mapColumn(",
 				"          Dummy,",
 				"          maxid",
-				"     )) ~> maxid"
+				"     )) ~> maxid",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
