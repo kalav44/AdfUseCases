@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "ds_dataflow_pipelog_output",
+						"referenceName": "ds_dataflow_pipelinelog_output",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -69,12 +69,6 @@
 				"select1, source1 union(byName: true)~> union1",
 				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          id as string,",
-				"          name as string,",
-				"          sal as string,",
-				"          RunningTotalSal as string",
-				"     ),",
 				"     partitionFileNames:[($pipelineFilename)],",
 				"     umask: 0022,",
 				"     preCommands: [],",
