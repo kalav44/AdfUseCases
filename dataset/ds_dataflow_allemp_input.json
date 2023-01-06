@@ -1,0 +1,33 @@
+{
+	"name": "ds_dataflow_allemp_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dataflow_input",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "AllEmp.csv",
+				"folderPath": "input",
+				"fileSystem": "dataflow"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "id",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			}
+		]
+	}
+}

@@ -1,0 +1,94 @@
+{
+	"name": "dataflow3Unionof2Files",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_dataflow_newemp_input",
+						"type": "DatasetReference"
+					},
+					"name": "newEmp"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_dataflow_allemp_input",
+						"type": "DatasetReference"
+					},
+					"name": "allemp"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_dataflow_allemp_input",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"name": "maxid"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> newEmp",
+				"source(output(",
+				"          id as string,",
+				"          name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> allemp",
+				"source(output(",
+				"          id as string,",
+				"          name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"derivedColumn1 aggregate(groupBy(Dummy),",
+				"     maxid = max(id)) ~> aggregate1",
+				"allemp derive(Dummy = 'Dummy') ~> derivedColumn1",
+				"newEmp keyGenerate(output(id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 derive(id = toString(id+toInteger(maxid#outputs()[1].maxid))) ~> derivedColumn2",
+				"source1, derivedColumn2 union(byName: true)~> union1",
+				"aggregate1 sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1,",
+				"     mapColumn(",
+				"          Dummy,",
+				"          maxid",
+				"     )) ~> maxid"
+			]
+		}
+	}
+}
