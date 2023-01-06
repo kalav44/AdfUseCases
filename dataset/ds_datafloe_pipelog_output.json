@@ -1,0 +1,23 @@
+{
+	"name": "ds_datafloe_pipelog_output",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dataflow_output",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "output/log",
+				"fileSystem": "dataflow"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
