@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_dataflow_input'"
 		},
+		"ls_dataflow_output_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_dataflow_output'"
+		},
 		"ls_pipeline_input_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_pipeline_input'"
@@ -20,6 +24,10 @@
 			"metadata": "Secure string for 'connectionString' of 'ls_sql_output'"
 		},
 		"ls_dataflow_input_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfgen2storagev.dfs.core.windows.net/"
+		},
+		"ls_dataflow_output_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adfgen2storagev.dfs.core.windows.net/"
 		},
@@ -57,6 +65,9 @@
 					"ls_dataflow_input_accountKey": {
 						"value": "[parameters('ls_dataflow_input_accountKey')]"
 					},
+					"ls_dataflow_output_accountKey": {
+						"value": "[parameters('ls_dataflow_output_accountKey')]"
+					},
 					"ls_pipeline_input_accountKey": {
 						"value": "[parameters('ls_pipeline_input_accountKey')]"
 					},
@@ -65,6 +76,9 @@
 					},
 					"ls_dataflow_input_properties_typeProperties_url": {
 						"value": "[parameters('ls_dataflow_input_properties_typeProperties_url')]"
+					},
+					"ls_dataflow_output_properties_typeProperties_url": {
+						"value": "[parameters('ls_dataflow_output_properties_typeProperties_url')]"
 					},
 					"ls_pipeline_input_properties_typeProperties_url": {
 						"value": "[parameters('ls_pipeline_input_properties_typeProperties_url')]"
