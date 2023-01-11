@@ -106,7 +106,25 @@
 							"typeProperties": {
 								"dataflow": {
 									"referenceName": "dataflow5pipelineLog",
-									"type": "DataFlowReference"
+									"type": "DataFlowReference",
+									"parameters": {
+										"ADFname": {
+											"value": "'@{pipeline().DataFactory}'",
+											"type": "Expression"
+										},
+										"PipelineName": {
+											"value": "'@{pipeline().Pipeline}'",
+											"type": "Expression"
+										},
+										"TriggetTime": {
+											"value": "'@{pipeline().TriggerTime}'",
+											"type": "Expression"
+										},
+										"LogFileName": {
+											"value": "'@{variables('File')}'",
+											"type": "Expression"
+										}
+									}
 								},
 								"compute": {
 									"coreCount": 8,
@@ -133,6 +151,24 @@
 								"dataflow": {
 									"referenceName": "dataflow5pipelineLog_Append",
 									"type": "DataFlowReference",
+									"parameters": {
+										"ADFname": {
+											"value": "'@{pipeline().DataFactory}'",
+											"type": "Expression"
+										},
+										"PipelineName": {
+											"value": "'@{pipeline().Pipeline}'",
+											"type": "Expression"
+										},
+										"TriggetTime": {
+											"value": "'@{pipeline().TriggerTime}'",
+											"type": "Expression"
+										},
+										"LogFileName": {
+											"value": "'@{variables('File')}'",
+											"type": "Expression"
+										}
+									},
 									"datasetParameters": {
 										"source1": {
 											"dfilename": {
