@@ -55,7 +55,7 @@
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     wildcardPaths:[('/log' + $LogFileName)]) ~> source1",
+				"     wildcardPaths:[('/log/' + $LogFileName)]) ~> source1",
 				"DummySource derive(AdfName = $ADFname,",
 				"          PipelineName = $PipelineName,",
 				"          Runtime = $TriggetTime) ~> derivedColumn1",
