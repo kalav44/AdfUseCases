@@ -31,10 +31,10 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     ADFname as string,",
-				"     PipelineName as string,",
-				"     TriggetTime as string,",
-				"     LogFileName as string",
+				"     ADFname as string ('default'),",
+				"     PipelineName as string ('default'),",
+				"     TriggetTime as string ('default'),",
+				"     LogFileName as string ('default')",
 				"}",
 				"source(output(",
 				"          dummy as string",
@@ -60,6 +60,11 @@
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          AdfName,",
+				"          PipelineName,",
+				"          Runtime",
+				"     ),",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
