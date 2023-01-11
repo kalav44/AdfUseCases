@@ -1,0 +1,32 @@
+{
+	"name": "ds_dataflow_log_append",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_dataflow_output",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dfilename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().dfilename",
+					"type": "Expression"
+				},
+				"folderPath": "output/log",
+				"fileSystem": "dataflow"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

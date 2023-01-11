@@ -1,0 +1,80 @@
+{
+	"name": "dataflow5pipelineLog_Append",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_dataflow_dummylog_input",
+						"type": "DatasetReference"
+					},
+					"name": "DummySource"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_dataflow_log_append",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_dtaflow_log_output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     ADFname as string,",
+				"     PipelineName as string,",
+				"     TriggetTime as string,",
+				"     LogFileName as string",
+				"}",
+				"source(output(",
+				"          dummy as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DummySource",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     wildcardPaths:[('/log' + $LogFileName)]) ~> source1",
+				"DummySource derive(AdfName = $ADFname,",
+				"          PipelineName = $PipelineName,",
+				"          Runtime = $TriggetTime) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          AdfName,",
+				"          PipelineName,",
+				"          Runtime",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1, source1 union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
