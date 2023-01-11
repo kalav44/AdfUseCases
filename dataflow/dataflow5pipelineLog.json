@@ -37,7 +37,7 @@
 				"     LogFileName as string ('default')",
 				"}",
 				"source(output(",
-				"          dummy as string",
+				"          dummyheader as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
