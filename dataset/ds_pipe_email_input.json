@@ -1,0 +1,29 @@
+{
+	"name": "ds_pipe_email_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pipeline_input",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "email.csv",
+				"folderPath": "input",
+				"fileSystem": "pipeline"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Email",
+				"type": "String"
+			}
+		]
+	}
+}
