@@ -1,0 +1,9 @@
+{
+	"name": "adf-ease-poc",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bc758aed-ef59-44aa-8a9b-c93906880c1b",
+		"tenantId": "18791e17-6159-4f52-a8d4-de814ca8284a"
+	}
+}

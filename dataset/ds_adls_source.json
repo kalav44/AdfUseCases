@@ -1,0 +1,70 @@
+{
+	"name": "ds_adls_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_source",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TableName": {
+				"type": "string"
+			},
+			"ADLSContainerName": {
+				"type": "string"
+			},
+			"ADLSFileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().ADLSFileName",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().ADLSContainerName",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ICM_ID",
+				"type": "String"
+			},
+			{
+				"name": "ICM_MAT_ID",
+				"type": "String"
+			},
+			{
+				"name": "ICM_COMMENT",
+				"type": "String"
+			},
+			{
+				"name": "ICM_CREATOR",
+				"type": "String"
+			},
+			{
+				"name": "ICM_CREATION_DATE",
+				"type": "String"
+			},
+			{
+				"name": "ICM_LAST_EDITOR",
+				"type": "String"
+			},
+			{
+				"name": "ICM_LAST_EDIT_DATE",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
